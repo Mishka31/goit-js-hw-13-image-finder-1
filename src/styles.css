@@ -1,0 +1,8 @@
+.search-form {
+    margin: 50px auto;
+    text-align: center;
+}
+
+.search-form input {
+    width: 250px;
+}
