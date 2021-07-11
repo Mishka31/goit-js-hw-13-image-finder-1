@@ -10,6 +10,11 @@ p {
   margin: 0;
 }
 
+img {
+  width: 100%;
+  display: block;
+}
+
 .search-form {
   margin-bottom: 50px;
 }
@@ -37,7 +42,6 @@ p {
 }
 
 .gallery-image {
-  width: 430px;
   height: 300px;
   object-fit: cover;
 }
@@ -59,4 +63,9 @@ p {
 
 .material-icons {
   margin-right: 5px;
+}
+
+#spinner {
+  padding-top: 15px;
+  padding-bottom: 15px;
 }

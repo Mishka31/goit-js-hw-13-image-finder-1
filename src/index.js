@@ -4,7 +4,8 @@ import imagesTemplate from "./images.hbs";
 const refs = {
     searchForm: document.querySelector('#search-form'),
     imagesList: document.querySelector('.gallery'),
-    anchor: document.querySelector('.anchor')
+    anchor: document.querySelector('#anchor'),
+    spinner: document.querySelector('#spinner')
 }
 
 const imagesApiService = new ImagesApiService();
@@ -23,10 +24,13 @@ function onSearch(e) {
     if (imagesApiService.query === '') {
         return alert('Enter query to search');
     }
+
+    refs.spinner.classList.remove('visually-hidden');
     imagesApiService.resetPage();
     imagesApiService.fetchImages().then(images => {
         clearGallery();
         apppendMarkup(images);
+        refs.spinner.classList.add('visually-hidden');
         observer.observe(refs.anchor);
     });
 }
@@ -39,6 +43,11 @@ function clearGallery() {
     refs.imagesList.innerHTML = '';
 }
 
-function loadMore() {
-    imagesApiService.fetchImages().then(apppendMarkup);
+function loadMore([entrie]) {
+    if (!entrie.isIntersecting) return;
+    refs.spinner.classList.remove('visually-hidden');
+    imagesApiService.fetchImages().then(images => {
+        refs.spinner.classList.add('visually-hidden');
+        apppendMarkup(images);
+    });
 }
