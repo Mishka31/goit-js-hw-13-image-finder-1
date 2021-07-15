@@ -1,17 +1,27 @@
 import ImagesApiService from "./apiService";
 import imagesTemplate from "./images.hbs";
+import * as basicLightbox from 'basiclightbox';
+import toastr from "toastr";
+import 'toastr/build/toastr.css';
+const debounce = require("lodash.debounce");
 
 const refs = {
     searchForm: document.querySelector('#search-form'),
     imagesList: document.querySelector('.gallery'),
     anchor: document.querySelector('#anchor'),
-    spinner: document.querySelector('#spinner')
+    spinner: document.querySelector('#spinner'),
+    goUpBtn: document.getElementById('back-to-top')
 }
 
 const imagesApiService = new ImagesApiService();
 const observer = new IntersectionObserver(loadMore, {
     threshold: 0,
 });
+const formObserver = new IntersectionObserver(onTopScroll, {
+    threshold: 0,
+});
+
+formObserver.observe(refs.searchForm);
 
 
 
@@ -22,7 +32,7 @@ function onSearch(e) {
 
     imagesApiService.query = e.currentTarget.elements.query.value;
     if (imagesApiService.query === '') {
-        return alert('Enter query to search');
+        return toastr.error("Enter query to search");
     }
 
     refs.spinner.classList.remove('visually-hidden');
@@ -49,5 +59,33 @@ function loadMore([entrie]) {
     imagesApiService.fetchImages().then(images => {
         refs.spinner.classList.add('visually-hidden');
         apppendMarkup(images);
+        if (images.length === 0) {
+          debounce(toastr.warning('End of content'), 500);
+        }
     });
+    refs.goUpBtn.classList.remove('visually-hidden');
+
+    
+}
+
+
+refs.imagesList.onclick = (evt) => {
+    // evt.preventDefault();
+
+    if (evt.target.nodeName !== 'IMG') return;
+
+    console.log(evt.target.nodeName);
+
+    basicLightbox.create(`
+        <img src=${evt.target.dataset.source} alt='' width='1200'>
+    `).show(evt);
+}
+
+function onTopScroll([entrie]) {
+    if (entrie.isIntersecting) {
+        refs.goUpBtn.classList.add('visually-hidden');
+    } else if (!entrie.isIntersecting) {
+        refs.goUpBtn.classList.remove('visually-hidden');
+    }
+    
 }
