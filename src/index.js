@@ -1,5 +1,5 @@
-import ImagesApiService from "./apiService";
-import imagesTemplate from "./images.hbs";
+import ImagesApiService from "./components/apiService";
+import imagesTemplate from "./templates/images.hbs";
 import * as basicLightbox from 'basiclightbox';
 import toastr from "toastr";
 import 'toastr/build/toastr.css';
